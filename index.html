@@ -12,13 +12,26 @@
 </head>
 
 <div style="padding: 16% 10%">
-   <form action="http://oss.push.webdev.com/PushApi/iosunicast" method="get" name="myform" class="bs-example bs-example-form" role="form">
+
+	<label class="radio-inline">
+		<input type="radio" name="pushMode" id="productMode" value="productMode" checked="true"> 正式环境
+		<br>
+	</label>
+	<label class="radio-inline">
+		<input type="radio" name="pushMode" id="devMode" value="devMode"> 开发环境 
+		<br>
+	</label>
+
+	<br>	
+	<br>
+
+	<form action="" method="" name="myform" id="myformid" class="bs-example bs-example-form" role="form">
 		<input type="hidden" name="bid" value="10012"/>
 		<input type="hidden" name="enable" value="1"/>
 		<input type="hidden" name="expire" value="1000"/>
 		<div class="input-group input-group-lg">
 			<span class="input-group-addon">@</span>
-			<input type="text" name="token" placeholder="Token" class="form-control">
+			<input type="text" name="token" id="token" placeholder="Token" class="form-control">
 		</div><br>
 		<div class="input-group input-group-lg">
 			<span class="input-group-addon">@</span>
@@ -26,62 +39,78 @@
 		</div><br>
 		<input type="hidden" name="pushuser" value="adolph"/>
 		<input type="hidden" name="env" value="product"/>
+		<input type="hidden" name="type" value="unicastbytoken"/>
 		<button class="btn btn-success btn-lg btn-block" onclick="submitForm()">点击发送</button>
 		<br>
 
 		<button type="button" class="btn btn-info btn-lg"><a href="http://tool.chinaz.com/tools/urlencode.aspx" style="color:white">URL转码工具</a></button>
 		<div class="btn-group" role="group">
-	    <button id="btnGroupDrop1" type="button" class="btn btn-info btn-lg dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-	      常用示例
-	    </button>
-	    <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-		<a class="dropdown-item" href="javascript:setDetailPage()">详情页</a>
-		<a class="dropdown-item" href="javascript:setOperationPage()">运营页</a>
-		<a class="dropdown-item" href="javascript:setH5Page()">H5</a>
-		<a class="dropdown-item" href="javascript:setVipPage()">好莱坞开通页</a>
-	    </div>
+			<button id="btnGroupDrop1" type="button" class="btn btn-info btn-lg dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				常用示例
+			</button>
+			<div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+				<a class="dropdown-item" href="javascript:setDetailPage()">详情页</a>
+				<a class="dropdown-item" href="javascript:setOperationPage()">运营页</a>
+				<a class="dropdown-item" href="javascript:setH5Page()">H5</a>
+				<a class="dropdown-item" href="javascript:setVipPage()">好莱坞开通页</a>
+			</div>
 
-	  </div>
+		</div>
 	</form>
 </div>
 
 <script>
-function submitForm()
-{
-	var str = document.getElementById("payload").value;
-	console.log(str);
-	document.getElementById('payload').value = str;
-	console.log(document.getElementById('payload').value);
-	document.myform.submit();
-}
-function setDetailPage()
-{
-	var str = '{"aps":{"alert":"Push From Web 详情页，老协议","sound":"default"},"cover_id":"4e62aswdyxgxfzw","cover_type":"0","dest_type":"5","update_num":"1"}'
-	console.log(str);
-	document.getElementById('payload').value = str;
-	console.log(document.getElementById('payload').value);
-}
-function setOperationPage()
-{
-	var str = '{"aps":{"alert":"Push From Web 运营页，新协议","sound":"default"},"d":"a=6&t=12024&aid=V0$$1:601$12:yxpush.60242&m=142226&f=142226"}';
-	console.log(str);
-	document.getElementById('payload').value = str;
-	console.log(document.getElementById('payload').value);
-}
-function setH5Page()
-{
-	var str = '{"aps":{"alert":"Push From Web H5，新协议","sound":"default"},"d":"a=10&wu=http%3a%2f%2fwww.qq.com"}'
-	console.log(str);
-	document.getElementById('payload').value = str;
-	console.log(document.getElementById('payload').value);
-}
-function setVipPage()
-{
-	var str = '{"aps":{"alert":"Push From Web 好莱坞开通页，新协议","sound":"default"},"d":"a=10&wu=tenvideo2%3a%2f%2f%3faction%3d20%26isPush%3d1%26aid%3dV0%24%2412%3aiPho.rmd0"}'
-	console.log(str);
-	document.getElementById('payload').value = str;
-	console.log(document.getElementById('payload').value);
-}
+	function submitForm()
+	{
+		var str = document.getElementById("payload").value;
+		console.log(str);
+		document.getElementById('payload').value = str;
+		$('input[name="pushMode"]:checked').val()
+		if ($('input:radio:checked').val() == "productMode")
+		{
+			console.log("Product Mode");
+			document.getElementById('token').name = "token";
+			$("#myformid").attr("action", "http://oss.push.webdev.com/PushApi/iosunicast");
+			$("#myformid").attr("method", "get");
+		}
+		else if ($('input:radio:checked').val() == "devMode")
+		{
+			console.log("Dev Mode");
+			document.getElementById('token').name = "tokenlist";
+			$("#myformid").attr("action", "http://test.case.push.webdev.com/iossend");
+			$("#myformid").attr("method", "post");
+		}
+		$("#myformid").submit();
+	}
+
+	function setDetailPage()
+	{
+		var str = '{"aps":{"alert":"Push From Web 详情页，老协议","sound":"default"},"cover_id":"4e62aswdyxgxfzw","cover_type":"0","dest_type":"5","update_num":"1"}'
+		console.log(str);
+		document.getElementById('payload').value = str;
+		console.log(document.getElementById('payload').value);
+	}
+	function setOperationPage()
+	{
+		var str = '{"aps":{"alert":"Push From Web 运营页，新协议","sound":"default"},"d":"a=6&t=12024&aid=V0$$1:601$12:yxpush.60242&m=142226&f=142226"}';
+		console.log(str);
+		document.getElementById('payload').value = str;
+		console.log(document.getElementById('payload').value);
+	}
+	function setH5Page()
+	{
+		var str = '{"aps":{"alert":"Push From Web H5，新协议","sound":"default"},"d":"a=10&wu=http%3a%2f%2fwww.qq.com"}'
+		console.log(str);
+		document.getElementById('payload').value = str;
+		console.log(document.getElementById('payload').value);
+	}
+	function setVipPage()
+	{
+		var str = '{"aps":{"alert":"Push From Web 好莱坞开通页，新协议","sound":"default"},"d":"a=10&wu=tenvideo2%3a%2f%2f%3faction%3d20%26isPush%3d1%26aid%3dV0%24%2412%3aiPho.rmd0"}'
+		console.log(str);
+		document.getElementById('payload').value = str;
+		console.log(document.getElementById('payload').value);
+	}
 </script>
 
 </html>
